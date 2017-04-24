@@ -1,7 +1,6 @@
 {
     "require": {
         "phpunit/phpunit": "^6.1",
-        "guzzlehttp/guzzle": "^6.2",
         "mockery/mockery": "^0.9.9"
     },
     "autoload": {
