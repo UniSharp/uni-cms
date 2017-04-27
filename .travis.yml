@@ -11,5 +11,9 @@ install:
   - travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
 script:
-  - vendor/bin/phpunit --coverage-text
+  - mkdir -p build/logs
+  - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
   - vendor/bin/phpcs --version && echo && vendor/bin/phpcs -p --standard=PSR2 src
+
+after_success:
+  - vendor/bin/coveralls -v
