@@ -2,15 +2,15 @@
 
 namespace Tests;
 
-use App\Main;
 use Mockery as m;
+use UniSharp\UniCMS\Node;
 
 class UnitTest extends TestCase
 {
-    public function testFoo()
+    public function testNode()
     {
-        $main = new Main;
+        $node = new Node;
 
-        $this->assertEquals('bar', $main->foo());
+        $this->assertTrue($node->is($node));
     }
 }
