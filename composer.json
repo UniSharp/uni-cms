@@ -7,11 +7,17 @@
         }
     ],
     "require": {
+        "illuminate/database": "^5.5",
+        "illuminate/support": "^5.5",
+        "illuminate/container": "^5.5"
     },
     "autoload": {
         "psr-4": {
             "App\\": "src"
-        }
+        },
+        "classmap": [
+            "database"
+        ]
     },
     "require-dev": {
         "php": "^7.0",

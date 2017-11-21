@@ -3,7 +3,7 @@
 namespace Tests;
 
 use App\Main;
-use PHPUnit\Framework\TestCase;
+use Mockery as m;
 
 class UnitTest extends TestCase
 {
