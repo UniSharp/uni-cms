@@ -25,7 +25,7 @@ class Widget extends Model
         });
 
         static::creating(function ($model) {
-            $model->sort = $model->page->widgets->count();
+            $model->sort = $model->page->widgets()->count();
 
             return $model;
         });
