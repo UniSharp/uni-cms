@@ -3,10 +3,15 @@
 namespace UniSharp\UniCMS;
 
 use Illuminate\Database\Eloquent\Model;
+use UniSharp\UniCMS\Traits\Translatable;
 
 class Page extends Model
 {
+    use Translatable;
+
     protected $fillable = ['slug'];
+
+    protected $translatedAttributes = ['name'];
 
     public function node()
     {

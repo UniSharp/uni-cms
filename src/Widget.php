@@ -3,13 +3,18 @@
 namespace UniSharp\UniCMS;
 
 use Illuminate\Database\Eloquent\Model;
+use UniSharp\UniCMS\Traits\Translatable;
 use Illuminate\Database\Eloquent\Builder;
 
 class Widget extends Model
 {
+    use Translatable;
+
     protected $casts = [
         'sort' => 'integer',
     ];
+
+    protected $translatedAttributes = ['data'];
 
     public static function boot()
     {

@@ -33,6 +33,17 @@ class CreateUniCMSTables extends Migration
             $table->unsignedInteger('sort');
             $table->timestamps();
         });
+
+        Schema::create('translations', function (Blueprint $table) {
+            $table->increments('id');
+            $table->morphs('translatable');
+            $table->string('lang');
+            $table->string('key');
+            $table->text('value');
+            $table->timestamps();
+
+            $table->unique(['translatable_type', 'translatable_id', 'lang','key']);
+        });
     }
 
     /**
@@ -42,6 +53,7 @@ class CreateUniCMSTables extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('translations');
         Schema::dropIfExists('widgets');
         Schema::dropIfExists('pages');
         Schema::dropIfExists('nodes');
