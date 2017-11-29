@@ -40,6 +40,10 @@ trait Translatable
             }
         });
 
+        static::deleted(function ($model) {
+            $model->translations()->delete();
+        });
+
         static::retrieved(function ($model) {
             foreach ($model->getRelationValue('translations') as $trans) {
                 $model->setOriginalTranslation($trans->lang, $trans->key, $trans->value);
