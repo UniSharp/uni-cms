@@ -23,7 +23,8 @@ class CreateUniCMSTables extends Migration
 
         Schema::create('pages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('slug');
+            $table->string('slug')->nullable()->unique();
+            $table->dateTime('published_at')->nullable();
             $table->timestamps();
         });
 
