@@ -31,6 +31,7 @@ class CreateUniCMSTables extends Migration
         Schema::create('widgets', function (Blueprint $table) {
             $table->increments('id');
             $table->morphs('page');
+            $table->string('type');
             $table->unsignedInteger('sort');
             $table->timestamps();
         });

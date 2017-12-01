@@ -12,7 +12,7 @@ class WidgetTest extends TestCase
     {
         $page = Page::create(['slug' => 'foo']);
 
-        $widget = $page->widgets()->create();
+        $widget = $page->widgets()->create(['type' => 'text-center']);
 
         $this->assertTrue($widget->fresh()->page->is($page));
     }
@@ -21,9 +21,9 @@ class WidgetTest extends TestCase
     {
         $page = Page::create(['slug' => 'foo']);
 
-        $this->assertEquals(0, $page->widgets()->create()->sort);
-        $this->assertEquals(1, $page->widgets()->create()->sort);
-        $this->assertEquals(2, $page->widgets()->create()->sort);
+        $this->assertEquals(0, $page->widgets()->create(['type' => 'text-center'])->sort);
+        $this->assertEquals(1, $page->widgets()->create(['type' => 'text-center'])->sort);
+        $this->assertEquals(2, $page->widgets()->create(['type' => 'text-center'])->sort);
     }
 
     public function testAutoSort()
@@ -37,7 +37,7 @@ class WidgetTest extends TestCase
         ];
 
         foreach ($widgets as $var => $sort) {
-            $$var = $page->widgets()->create();
+            $$var = $page->widgets()->create(['type' => 'text-center']);
 
             $$var->sort = $sort;
 

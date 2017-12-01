@@ -10,6 +10,8 @@ class Widget extends Model
 {
     use Translatable;
 
+    protected $fillable = ['type'];
+
     protected $casts = [
         'sort' => 'integer',
     ];
