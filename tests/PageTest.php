@@ -25,7 +25,9 @@ class PageTest extends TestCase
     {
         $page = Page::create(['slug' => 'foo']);
 
-        $widget = $page->widgets()->create();
+        $widget = $page->widgets()->create([
+            'type' => 'text-center'
+        ]);
 
         $this->assertTrue($page->fresh()->widgets()->first()->is($widget));
     }
