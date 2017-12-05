@@ -4,6 +4,7 @@ namespace Tests;
 
 use Mockery as m;
 use UniSharp\UniCMS\Page;
+use UniSharp\UniCMS\Translation;
 
 class TranslateTest extends TestCase
 {
@@ -41,6 +42,21 @@ class TranslateTest extends TestCase
         $this->assertEquals('FOO', $page->fresh()->getTranslation('en', 'name'));
         $this->assertEquals('BAR', $page->fresh()->translate('de')->name);
         $this->assertEquals('BAR', $page->fresh()->getTranslation('de', 'name'));
+    }
+
+    public function testDelete()
+    {
+        $page = new Page(['slug' => 'foo']);
+
+        $page->translate('en')->name = 'foo';
+
+        $page->save();
+
+        $this->assertCount(1, Translation::all());
+
+        $page->delete();
+
+        $this->assertCount(0, Translation::all());
     }
 
     public function testDirty()
