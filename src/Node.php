@@ -13,4 +13,13 @@ class Node extends Model
     {
         return $this->morphTo('node');
     }
+   
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleted(function ($model) {
+            $model->page->delete();
+        });
+    }
 }
