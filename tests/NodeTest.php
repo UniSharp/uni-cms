@@ -20,4 +20,22 @@ class NodeTest extends TestCase
 
         $this->assertTrue($node->fresh()->page->is($page));
     }
+
+    public function testDeleted()
+    {
+        $node = new Node;
+
+        $page = Page::create(['slug' => 'foo']);
+
+        $node->page()->associate($page);
+
+        $node->save();
+
+        $this->assertNotNull(Page::find($page->id));
+
+        $node->delete();
+
+        $this->assertNull(Page::find($page->id));
+
+    }
 }
