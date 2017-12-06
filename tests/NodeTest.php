@@ -36,6 +36,5 @@ class NodeTest extends TestCase
         $node->delete();
 
         $this->assertNull(Page::find($page->id));
-
     }
 }
