@@ -87,6 +87,11 @@ trait Translatable
         return $this->translations[$lang][$key] ?? $this->originalTranslations[$lang][$key] ?? null;
     }
 
+    public function translationsToArray($lang)
+    {
+        return $this->translations[$lang] ?? $this->originalTranslations[$lang] ?? [];
+    }
+
     public function translate($lang)
     {
         $this->lang = $lang;
@@ -115,7 +120,7 @@ trait Translatable
 
     public function __get($key)
     {
-        if (in_array($key, $this->getTranslatedAttributes())) {
+        if ($this->isTranslatedAttribute($key)) {
             return $this->getTranslation($this->lang, $key);
         }
 
@@ -124,12 +129,30 @@ trait Translatable
 
     public function __set($key, $value)
     {
-        if (in_array($key, $this->getTranslatedAttributes())) {
+        if ($this->isTranslatedAttribute($key)) {
             $this->setTranslation($this->lang, $key, $value);
 
             return;
         }
 
         parent::__set($key, $value);
+    }
+
+    public function toArray()
+    {
+        $array = array_merge(
+            $this->attributesToArray(),
+            $this->relationsToArray(),
+            $this->translationsToArray($this->lang)
+        );
+
+        array_forget($array, 'translations');
+
+        return $array;
+    }
+
+    protected function isTranslatedAttribute($key)
+    {
+        return in_array($key, $this->getTranslatedAttributes());
     }
 }

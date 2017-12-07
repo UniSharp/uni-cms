@@ -84,4 +84,17 @@ class TranslateTest extends TestCase
         $this->assertFalse($page->isTranslationDirty());
         $this->assertEquals(['en' => [], 'de' => []], $page->getTranslationDirty());
     }
+
+    public function testToArray()
+    {
+        $page = new Page(['slug' => 'foo']);
+
+        $page->translate('en')->name = 'foo';
+
+        $page->save();
+
+        $this->assertEquals(['name' => 'foo'], $page->fresh()->translationsToArray('en'));
+        $this->assertEquals('foo', $page->fresh()->translate('en')->toArray()['name']);
+        $this->assertArrayNotHasKey('translations', $page->fresh()->translate('en')->toArray());
+    }
 }
