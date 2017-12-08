@@ -9,7 +9,7 @@ class Page extends Model
 {
     use Translatable;
 
-    protected $fillable = ['slug'];
+    protected $fillable = ['slug', 'published_at'];
 
     protected $translatedAttributes = ['name'];
 
