@@ -87,7 +87,10 @@ class TranslateTest extends TestCase
 
     public function testToArray()
     {
-        $page = new Page(['slug' => 'foo']);
+        $page = new class(['slug' => 'foo']) extends Page {
+            public $table = 'pages';
+            protected $translatedAttributes = ['name', 'title'];
+        };
 
         $page->translate('en')->name = 'foo';
 
@@ -96,5 +99,12 @@ class TranslateTest extends TestCase
         $this->assertEquals(['name' => 'foo'], $page->fresh()->translationsToArray('en'));
         $this->assertEquals('foo', $page->fresh()->translate('en')->toArray()['name']);
         $this->assertArrayNotHasKey('translations', $page->fresh()->translate('en')->toArray());
+
+        $page->translate('en')->title = 'bar';
+
+        $this->assertEquals(['name' => 'foo', 'title' => 'bar'], $page->translationsToArray('en'));
+        $this->assertEquals('foo', $page->translate('en')->toArray()['name']);
+        $this->assertEquals('bar', $page->translate('en')->toArray()['title']);
+        $this->assertArrayNotHasKey('translations', $page->translate('en')->toArray());
     }
 }

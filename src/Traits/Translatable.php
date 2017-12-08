@@ -89,7 +89,7 @@ trait Translatable
 
     public function translationsToArray($lang)
     {
-        return $this->translations[$lang] ?? $this->originalTranslations[$lang] ?? [];
+        return array_merge($this->originalTranslations[$lang] ?? [], $this->translations[$lang] ?? []);
     }
 
     public function translate($lang)
