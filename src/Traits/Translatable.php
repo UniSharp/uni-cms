@@ -130,6 +130,20 @@ trait Translatable
         return true;
     }
 
+    public function fill(array $attributes)
+    {
+        foreach ($this->translatableFromArray($attributes) as $key => $value) {
+            $this->setTranslation($this->getLang(), $key, $value);
+        }
+
+        return parent::fill($attributes);
+    }
+
+    public function totallyGuarded()
+    {
+        return !!count($this->getTranslatedAttributes()) && parent::totallyGuarded();
+    }
+
     public function __get($key)
     {
         if ($this->isTranslatedAttribute($key)) {
@@ -171,5 +185,10 @@ trait Translatable
     protected function isTranslatedAttribute($key)
     {
         return in_array($key, $this->getTranslatedAttributes());
+    }
+
+    protected function translatableFromArray(array $attributes)
+    {
+        return array_intersect_key($attributes, array_flip($this->getTranslatedAttributes()));
     }
 }

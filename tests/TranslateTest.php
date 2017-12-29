@@ -159,4 +159,19 @@ class TranslateTest extends TestCase
         $this->assertEquals('FOO', $page->translate('de')->toArray()['name']);
         $this->assertEquals('bar', $page->translate('de')->toArray()['title']);
     }
+
+    public function testFill()
+    {
+        $page = new Page(['slug' => 'foo', 'name' => 'foo']);
+
+        $this->assertEquals('foo', $page->translate('de')->name);
+        $this->assertEquals('foo', $page->getTranslation('de', 'name'));
+
+        $page->save();
+
+        $this->assertEquals('foo', $page->translate('de')->name);
+        $this->assertEquals('foo', $page->getTranslation('de', 'name'));
+        $this->assertEquals('foo', $page->fresh()->translate('de')->name);
+        $this->assertEquals('foo', $page->fresh()->getTranslation('de', 'name'));
+    }
 }
