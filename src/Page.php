@@ -38,16 +38,16 @@ class Page extends Model
 
     public function children()
     {
-        return (new Proxy($this))->children();
+        return (new Proxy($this, static::class))->children();
     }
 
     public function getChildrenAttribute()
     {
-        return (new Proxy($this))->children(false);
+        return (new Proxy($this, static::class))->children(false);
     }
 
     public function getParentAttribute()
     {
-        return (new Proxy($this))->parent();
+        return (new Proxy($this, static::class))->parent();
     }
 }

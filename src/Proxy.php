@@ -12,10 +12,10 @@ class Proxy
 
     protected $strategy;
 
-    public function __construct(Model $model)
+    public function __construct(Model $model, $class)
     {
         $this->model = $model;
-        $this->class = get_class($model);
+        $this->class = $class;
     }
 
     public function children($isRelation = true)
