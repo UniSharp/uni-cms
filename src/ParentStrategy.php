@@ -2,7 +2,7 @@
 
 namespace UniSharp\UniCMS;
 
-class ParentStrategy
+class ParentStrategy extends BaseStrategy
 {
     protected $proxy;
 
@@ -11,8 +11,8 @@ class ParentStrategy
         $this->proxy = $proxy;
     }
 
-    public function __call($method, $args)
+    public function getResults()
     {
-        return $this->proxy->model->node->parent->page->$method(...$args);
+        return $this->proxy->model->node->parent->page;
     }
 }

@@ -6,18 +6,15 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
-class ChildrenStrategy
+class ChildrenStrategy extends BaseStrategy
 {
     protected $proxy;
 
-    protected $isRelation;
-
     protected $relation;
 
-    public function __construct(Proxy $proxy, $isRelation)
+    public function __construct(Proxy $proxy)
     {
         $this->proxy = $proxy;
-        $this->isRelation = $isRelation;
     }
 
     public function create(array $attribute)
@@ -29,34 +26,40 @@ class ChildrenStrategy
         return $instance;
     }
 
+    public function getResults()
+    {
+        return $this->getRelation()->getResults()->map->page;
+    }
+
     public function __call($method, $args)
+    {
+        if ($method === 'first') {
+            $result = $this->getRelation()->$method(...$args);
+        } else {
+            $result = $this->getRelation()->whereHas('page', function (Builder $query) use ($method, $args) {
+                return $query->$method(...$args);
+            });
+        }
+
+        if ($result instanceof Relation) {
+            $this->relation = $result;
+
+            return $this;
+        }
+
+        if ($result instanceof Collection) {
+            $result = $result->map;
+        }
+
+        return $result->page;
+    }
+
+    protected function getRelation()
     {
         if (!$this->relation) {
             $this->relation = $this->proxy->model->node->children();
         }
 
-        if ($this->isRelation) {
-            if ($method === 'first') {
-                $result = $this->relation->$method(...$args);
-            } else {
-                $result = $this->relation->whereHas('page', function (Builder $query) use ($method, $args) {
-                    return $query->$method(...$args);
-                });
-            }
-
-            if ($result instanceof Relation) {
-                $this->relation = $result;
-
-                return $this;
-            }
-
-            if ($result instanceof Collection) {
-                $result = $result->map;
-            }
-
-            return $result->page;
-        }
-
-        return $this->relation->getResults()->map->page->$method(...$args);
+        return $this->relation;
     }
 }
