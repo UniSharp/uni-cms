@@ -80,6 +80,10 @@ trait Translatable
 
     public function setTranslation($lang, $key, $value)
     {
+        if ($this->isJsonCastable($key) && ! is_null($value)) {
+            $value = $this->castAttributeAsJson($key, $value);
+        }
+
         $this->translations[$lang][$key] = $value;
 
         return $this;
@@ -87,21 +91,27 @@ trait Translatable
 
     public function getTranslation($lang, $key)
     {
-        return $this->translations[$lang][$key] ??
-               $this->originalTranslations[$lang][$key] ??
-               $this->translations[$this->fallbackLang][$key] ??
-               $this->originalTranslations[$this->fallbackLang][$key] ??
-               null;
+        $value = $this->translations[$lang][$key] ??
+                 $this->originalTranslations[$lang][$key] ??
+                 $this->translations[$this->fallbackLang][$key] ??
+                 $this->originalTranslations[$this->fallbackLang][$key] ??
+                 null;
+
+        if ($this->hasCast($key)) {
+            $value = $this->castAttribute($key, $value);
+        }
+
+        return $value;
     }
 
     public function translationsToArray($lang)
     {
-        return array_merge(
+        return $this->addCastAttributesToArray(array_merge(
             $this->originalTranslations[$this->fallbackLang] ?? [],
             $this->translations[$this->fallbackLang] ?? [],
             $this->originalTranslations[$lang] ?? [],
             $this->translations[$lang] ?? []
-        );
+        ), []);
     }
 
     public function translate($lang)

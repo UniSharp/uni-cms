@@ -191,4 +191,21 @@ class TranslateTest extends TestCase
             $this->assertEquals('foo', $page->fresh()->getTranslation('de', 'name'));
         });
     }
+
+    public function testCast()
+    {
+        $page = new class(['slug' => 'foo']) extends Page {
+            public $table = 'pages';
+            protected $translatedAttributes = ['data'];
+            protected $casts = ['data' => 'json'];
+        };
+
+        $page->translate('en')->data = $data = ['foo' => 'bar'];
+
+        $page->save();
+
+        $this->assertSame($data, $page->fresh()->translate('en')->data);
+        $this->assertSame(compact('data'), $page->fresh()->translationsToArray('en'));
+        $this->assertSame($data, $page->fresh()->translate('en')->toArray()['data']);
+    }
 }
