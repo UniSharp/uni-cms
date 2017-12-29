@@ -57,7 +57,10 @@ class ChildrenStrategy extends BaseStrategy
     protected function getRelation()
     {
         if (!$this->relation) {
-            $this->relation = $this->proxy->model->node->children();
+            $this->relation = $this->proxy->model->node->children()->where(
+                'node_type',
+                (new $this->proxy->class)->getMorphClass()
+            );
         }
 
         return $this->relation;
