@@ -9,6 +9,9 @@ trait Translatable
 {
     protected $lang;
 
+    protected $defaultLang = 'en';
+    protected $fallbackLang = 'en';
+
     protected $translations = [];
     protected $originalTranslations = [];
 
@@ -84,12 +87,21 @@ trait Translatable
 
     public function getTranslation($lang, $key)
     {
-        return $this->translations[$lang][$key] ?? $this->originalTranslations[$lang][$key] ?? null;
+        return $this->translations[$lang][$key] ??
+               $this->originalTranslations[$lang][$key] ??
+               $this->translations[$this->fallbackLang][$key] ??
+               $this->originalTranslations[$this->fallbackLang][$key] ??
+               null;
     }
 
     public function translationsToArray($lang)
     {
-        return array_merge($this->originalTranslations[$lang] ?? [], $this->translations[$lang] ?? []);
+        return array_merge(
+            $this->originalTranslations[$this->fallbackLang] ?? [],
+            $this->translations[$this->fallbackLang] ?? [],
+            $this->originalTranslations[$lang] ?? [],
+            $this->translations[$lang] ?? []
+        );
     }
 
     public function translate($lang)
@@ -121,7 +133,7 @@ trait Translatable
     public function __get($key)
     {
         if ($this->isTranslatedAttribute($key)) {
-            return $this->getTranslation($this->lang, $key);
+            return $this->getTranslation($this->getLang(), $key);
         }
 
         return parent::__get($key);
@@ -130,7 +142,7 @@ trait Translatable
     public function __set($key, $value)
     {
         if ($this->isTranslatedAttribute($key)) {
-            $this->setTranslation($this->lang, $key, $value);
+            $this->setTranslation($this->getLang(), $key, $value);
 
             return;
         }
@@ -143,12 +155,17 @@ trait Translatable
         $array = array_merge(
             $this->attributesToArray(),
             $this->relationsToArray(),
-            $this->translationsToArray($this->lang)
+            $this->translationsToArray($this->getLang())
         );
 
         array_forget($array, 'translations');
 
         return $array;
+    }
+
+    protected function getLang()
+    {
+        return $this->lang ?: $this->defaultLang;
     }
 
     protected function isTranslatedAttribute($key)

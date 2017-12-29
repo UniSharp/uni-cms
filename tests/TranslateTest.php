@@ -107,4 +107,56 @@ class TranslateTest extends TestCase
         $this->assertEquals('bar', $page->translate('en')->toArray()['title']);
         $this->assertArrayNotHasKey('translations', $page->translate('en')->toArray());
     }
+
+    public function testDefaultLanguage()
+    {
+        $page = new Page(['slug' => 'foo']);
+
+        $page->name = 'foo';
+
+        $this->assertEquals('foo', $page->name);
+        $this->assertEquals('foo', $page->translate('en')->name);
+        $this->assertEquals('foo', $page->getTranslation('en', 'name'));
+
+        $page->save();
+    }
+
+    public function testFallbackLanguage()
+    {
+        $page = new Page(['slug' => 'foo']);
+
+        $page->translate('en')->name = 'foo';
+
+        $this->assertEquals('foo', $page->translate('de')->name);
+        $this->assertEquals('foo', $page->getTranslation('de', 'name'));
+
+        $page->save();
+
+        $this->assertEquals('foo', $page->translate('de')->name);
+        $this->assertEquals('foo', $page->getTranslation('de', 'name'));
+        $this->assertEquals('foo', $page->fresh()->translate('de')->name);
+        $this->assertEquals('foo', $page->fresh()->getTranslation('de', 'name'));
+    }
+
+    public function testToArrayWithFallbackLang()
+    {
+        $page = new class(['slug' => 'foo']) extends Page {
+            public $table = 'pages';
+            protected $translatedAttributes = ['name', 'title'];
+        };
+
+        $page->translate('en')->name = 'foo';
+
+        $page->save();
+
+        $this->assertEquals(['name' => 'foo'], $page->fresh()->translationsToArray('de'));
+        $this->assertEquals('foo', $page->fresh()->translate('de')->toArray()['name']);
+
+        $page->translate('de')->name = 'FOO';
+        $page->translate('en')->title = 'bar';
+
+        $this->assertEquals(['name' => 'FOO', 'title' => 'bar'], $page->translationsToArray('de'));
+        $this->assertEquals('FOO', $page->translate('de')->toArray()['name']);
+        $this->assertEquals('bar', $page->translate('de')->toArray()['title']);
+    }
 }
