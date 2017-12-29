@@ -132,8 +132,10 @@ trait Translatable
 
     public function fill(array $attributes)
     {
-        foreach ($this->translatableFromArray($attributes) as $key => $value) {
+        foreach ($this->translatedFromArray($attributes) as $key => $value) {
             $this->setTranslation($this->getLang(), $key, $value);
+
+            array_forget($attributes, $key);
         }
 
         return parent::fill($attributes);
@@ -187,7 +189,7 @@ trait Translatable
         return in_array($key, $this->getTranslatedAttributes());
     }
 
-    protected function translatableFromArray(array $attributes)
+    protected function translatedFromArray(array $attributes)
     {
         return array_intersect_key($attributes, array_flip($this->getTranslatedAttributes()));
     }
