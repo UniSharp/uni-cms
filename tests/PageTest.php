@@ -10,15 +10,9 @@ class PageTest extends TestCase
 {
     public function testNode()
     {
-        $node = new Node;
-
         $page = Page::create(['slug' => 'foo']);
 
-        $node->page()->associate($page);
-
-        $node->save();
-
-        $this->assertTrue($page->fresh()->node->is($node));
+        $this->assertTrue($page->fresh()->node->is(Node::find(1)));
     }
 
     public function testWidgets()
@@ -30,5 +24,18 @@ class PageTest extends TestCase
         ]);
 
         $this->assertTrue($page->fresh()->widgets()->first()->is($widget));
+    }
+
+    public function testParentAndChildren()
+    {
+        $parent = Page::create(['slug' => 'foo']);
+
+        $child = $parent->children()->create(['slug' => 'bar'])->fresh();
+        $parent = $parent->fresh();
+
+        $this->assertTrue($parent->children->contains($child));
+        $this->assertTrue($parent->children()->first()->is($child));
+        $this->assertTrue($parent->children()->where('slug', 'bar')->first()->is($child));
+        $this->assertTrue($child->parent->is($parent));
     }
 }

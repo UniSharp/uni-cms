@@ -13,6 +13,19 @@ class Page extends Model
 
     protected $translatedAttributes = ['name'];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function (Page $page) {
+            $node = new Node;
+
+            $node->page()->associate($page);
+
+            $node->save();
+        });
+    }
+
     public function node()
     {
         return $this->morphOne(Node::class, 'node');
@@ -21,5 +34,20 @@ class Page extends Model
     public function widgets()
     {
         return $this->morphMany(Widget::class, 'page');
+    }
+
+    public function children()
+    {
+        return (new Adapter($this))->children();
+    }
+
+    public function getChildrenAttribute()
+    {
+        return (new Adapter($this))->children(false);
+    }
+
+    public function getParentAttribute()
+    {
+        return (new Adapter($this))->parent();
     }
 }
