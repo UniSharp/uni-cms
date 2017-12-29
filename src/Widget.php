@@ -14,6 +14,7 @@ class Widget extends Model
 
     protected $casts = [
         'sort' => 'integer',
+        'data' => 'json',
     ];
 
     protected $translatedAttributes = ['data'];
