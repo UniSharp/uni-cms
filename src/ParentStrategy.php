@@ -4,15 +4,15 @@ namespace UniSharp\UniCMS;
 
 class ParentStrategy
 {
-    protected $adapter;
+    protected $proxy;
 
-    public function __construct(Adapter $adapter)
+    public function __construct(Proxy $proxy)
     {
-        $this->adapter = $adapter;
+        $this->proxy = $proxy;
     }
 
     public function __call($method, $args)
     {
-        return $this->adapter->model->node->parent->page->$method(...$args);
+        return $this->proxy->model->node->parent->page->$method(...$args);
     }
 }

@@ -8,23 +8,23 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class ChildrenStrategy
 {
-    protected $adapter;
+    protected $proxy;
 
     protected $isRelation;
 
     protected $relation;
 
-    public function __construct(Adapter $adapter, $isRelation)
+    public function __construct(Proxy $proxy, $isRelation)
     {
-        $this->adapter = $adapter;
+        $this->proxy = $proxy;
         $this->isRelation = $isRelation;
     }
 
     public function create(array $attribute)
     {
-        $instance = $this->adapter->class::create($attribute);
+        $instance = $this->proxy->class::create($attribute);
 
-        $instance->node->appendToNode($this->adapter->model->node)->save();
+        $instance->node->appendToNode($this->proxy->model->node)->save();
 
         return $instance;
     }
@@ -32,7 +32,7 @@ class ChildrenStrategy
     public function __call($method, $args)
     {
         if (!$this->relation) {
-            $this->relation = $this->adapter->model->node->children();
+            $this->relation = $this->proxy->model->node->children();
         }
 
         if ($this->isRelation) {
