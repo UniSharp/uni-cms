@@ -50,4 +50,9 @@ class Page extends Model
     {
         return (new Proxy($this, static::class))->parent;
     }
+
+    public function getRootAttribute()
+    {
+        return (new Proxy($this, static::class))->root;
+    }
 }

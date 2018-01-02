@@ -1,6 +1,6 @@
 <?php
 
-namespace UniSharp\UniCMS;
+namespace UniSharp\UniCMS\Strategies;
 
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
@@ -8,14 +8,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 
 class ChildrenStrategy extends BaseStrategy
 {
-    protected $proxy;
-
     protected $relation;
-
-    public function __construct(Proxy $proxy)
-    {
-        $this->proxy = $proxy;
-    }
 
     public function create(array $attribute)
     {

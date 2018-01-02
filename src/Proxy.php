@@ -3,6 +3,9 @@
 namespace UniSharp\UniCMS;
 
 use Illuminate\Database\Eloquent\Model;
+use UniSharp\UniCMS\Strategies\RootStrategy;
+use UniSharp\UniCMS\Strategies\ParentStrategy;
+use UniSharp\UniCMS\Strategies\ChildrenStrategy;
 
 class Proxy
 {
@@ -13,6 +16,7 @@ class Proxy
     protected $strategy;
 
     protected $strategies = [
+        'root' => RootStrategy::class,
         'parent' => ParentStrategy::class,
         'children' => ChildrenStrategy::class,
     ];
@@ -25,14 +29,14 @@ class Proxy
 
     public function __get($key)
     {
-        if (in_array($key, ['children', 'parent'])) {
+        if (array_key_exists($key, $this->strategies)) {
             return (new $this->strategies[$key]($this))->getResults();
         }
     }
 
     public function __call($method, $args)
     {
-        if (in_array($method, ['children', 'parent'])) {
+        if (array_key_exists($method, $this->strategies)) {
             $this->strategy = new $this->strategies[$method]($this);
 
             return $this;
