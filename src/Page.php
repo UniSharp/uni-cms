@@ -46,6 +46,11 @@ class Page extends Model
         return (new Proxy($this, static::class))->children;
     }
 
+    public function parent()
+    {
+        return (new Proxy($this, static::class))->parent();
+    }
+
     public function getParentAttribute()
     {
         return (new Proxy($this, static::class))->parent;

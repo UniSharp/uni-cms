@@ -26,7 +26,7 @@ class PageTest extends TestCase
         $this->assertTrue($page->fresh()->widgets()->first()->is($widget));
     }
 
-    public function testParentAndChildrenAndRoot()
+    public function testChildren()
     {
         $parent = Page::create(['slug' => 'foo']);
 
@@ -36,7 +36,30 @@ class PageTest extends TestCase
         $this->assertTrue($parent->children->contains($child));
         $this->assertTrue($parent->children()->first()->is($child));
         $this->assertTrue($parent->children()->where('slug', 'bar')->first()->is($child));
+    }
+
+    public function testRoot()
+    {
+        $root = Page::create(['slug' => 'foo']);
+
+        $child = $root->children()->create(['slug' => 'bar'])->fresh();
+        $root = $root->fresh();
+
+        $this->assertTrue($child->root->is($root));
+    }
+
+    public function testParent()
+    {
+        $child = Page::create(['slug' => 'foo']);
+        $parent = Page::create(['slug' => 'bar']);
+
+        $this->assertNull($child->parent);
+
+        $child->parent()->associate($parent)->save();
+
+        $child = $child->fresh();
+        $parent = $parent->fresh();
+
         $this->assertTrue($child->parent->is($parent));
-        $this->assertTrue($child->root->is($parent));
     }
 }
