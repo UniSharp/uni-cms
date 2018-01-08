@@ -208,4 +208,49 @@ class TranslateTest extends TestCase
         $this->assertSame(compact('data'), $page->fresh()->translationsToArray('en'));
         $this->assertSame($data, $page->fresh()->translate('en')->toArray()['data']);
     }
+
+    public function testSaveWithNullValue()
+    {
+        $page = new Page(['slug' => 'foo']);
+
+        $page->translate('en')->name = null;
+
+        $page->save();
+
+        $this->assertCount(0, Translation::all());
+
+        $this->assertFalse($page->isTranslationDirty());
+    }
+
+    public function testFillWithNullValue()
+    {
+        $page = new Page(['slug' => 'foo']);
+
+        $page->translate('en')->fill(['name' => null]);
+
+        $page->save();
+
+        $this->assertCount(0, Translation::all());
+
+        $this->assertFalse($page->isTranslationDirty());
+    }
+
+    public function testUpdateWithNullValue()
+    {
+        $page = new Page(['slug' => 'foo']);
+
+        $page->translate('en')->name = 'foo';
+
+        $page->save();
+
+        $this->assertCount(1, Translation::all());
+
+        $page->translate('en')->name = null;
+
+        $page->save();
+
+        $this->assertCount(0, Translation::all());
+
+        $this->assertFalse($page->isTranslationDirty());
+    }
 }

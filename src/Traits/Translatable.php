@@ -26,7 +26,13 @@ trait Translatable
 
             foreach ($model->getTranslationDirty() as $lang => $trans) {
                 foreach ($trans as $key => $value) {
-                    $translations[] = compact('lang', 'key', 'value');
+                    if (!is_null($value)) {
+                        $translations[] = compact('lang', 'key', 'value');
+
+                        $model->setOriginalTranslation($lang, $key, $value);
+                    } else {
+                        $model->unsetTranslation($lang, $key);
+                    }
                 }
             }
 
@@ -36,9 +42,15 @@ trait Translatable
         static::updated(function ($model) {
             foreach ($model->getTranslationDirty() as $lang => $trans) {
                 foreach ($trans as $key => $value) {
-                    $model->translations()->updateOrCreate(compact('lang', 'key'), compact('value'));
+                    if (!is_null($value)) {
+                        $model->translations()->updateOrCreate(compact('lang', 'key'), compact('value'));
 
-                    $model->setOriginalTranslation($lang, $key, $value);
+                        $model->setOriginalTranslation($lang, $key, $value);
+                    } else {
+                        $model->translations()->where(compact('lang', 'key'))->delete();
+
+                        $model->unsetTranslation($lang, $key);
+                    }
                 }
             }
         });
@@ -89,6 +101,13 @@ trait Translatable
         return $this;
     }
 
+    public function unsetTranslation($lang, $key)
+    {
+        unset($this->translations[$lang][$key]);
+
+        return $this;
+    }
+
     public function getTranslation($lang, $key)
     {
         $value = $this->translations[$lang][$key] ??
@@ -128,11 +147,13 @@ trait Translatable
 
     public function save(array $options = [])
     {
+        $isUpdate = $this->exists;
+
         if (!parent::save($options)) {
             return false;
         }
 
-        if ($this->isTranslationDirty()) {
+        if ($isUpdate && $this->isTranslationDirty()) {
             $this->fireModelEvent('saved', false);
             $this->fireModelEvent('updated', false);
         }
