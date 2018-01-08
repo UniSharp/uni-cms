@@ -202,6 +202,7 @@ trait Translatable
         $array = array_merge(
             $this->attributesToArray(),
             $this->relationsToArray(),
+            array_fill_keys($this->getTranslatedAttributes(), null),
             $this->translationsToArray($this->getLang())
         );
 
