@@ -41,7 +41,7 @@ class CreateUniCMSTables extends Migration
             $table->morphs('translatable');
             $table->string('lang');
             $table->string('key');
-            $table->text('value')->default('');
+            $table->text('value');
             $table->timestamps();
 
             $table->unique(['translatable_type', 'translatable_id', 'lang','key']);
