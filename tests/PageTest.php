@@ -62,4 +62,29 @@ class PageTest extends TestCase
 
         $this->assertTrue($child->parent->is($parent));
     }
+
+    public function testToTree()
+    {
+        $root = Page::create(['slug' => 'foo']);
+        $parent = $root->children()->create(['slug' => 'bar']);
+        $child = $parent->children()->create(['slug' => 'baz']);
+
+        $root = $root->fresh();
+        $parent = $parent->fresh();
+        $child = $child->fresh();
+
+        $this->assertArraySubset([
+            'slug' => 'foo',
+            'children' => [
+                [
+                    'slug' => 'bar',
+                    'children' => [
+                        [
+                            'slug' => 'baz'
+                        ]
+                    ]
+                ]
+            ]
+        ], $root->toTree()->toArray());
+    }
 }

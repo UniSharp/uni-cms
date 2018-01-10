@@ -9,11 +9,6 @@ class Node extends Model
 {
     use NodeTrait;
 
-    public function page()
-    {
-        return $this->morphTo('node');
-    }
-   
     public static function boot()
     {
         parent::boot();
@@ -21,5 +16,10 @@ class Node extends Model
         static::deleted(function ($model) {
             $model->page->delete();
         });
+    }
+
+    public function page()
+    {
+        return $this->morphTo('node');
     }
 }

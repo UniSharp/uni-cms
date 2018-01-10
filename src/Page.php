@@ -60,4 +60,31 @@ class Page extends Model
     {
         return (new Proxy($this, static::class))->root;
     }
+
+    public function toTree()
+    {
+        $tree = $this->node->load('page')->toArray();
+        $tree['children'] = $this->node->descendants->map->load('page')->toTree()->toArray();
+
+        $toPage = function ($node) use (&$toPage) {
+            $children = collect();
+
+            if (isset($node['children'])) {
+                foreach ($node['children'] as $child) {
+                    $children[] = $toPage($child);
+                }
+            }
+
+            // TODO: bug? no page bug node...
+            $page = $node['node'];
+
+            if (count($children)) {
+                $page['children'] = $children;
+            }
+
+            return collect($page);
+        };
+
+        return $toPage($tree);
+    }
 }
