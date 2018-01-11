@@ -13,6 +13,10 @@ class PageTest extends TestCase
         $page = Page::create(['slug' => 'foo']);
 
         $this->assertTrue($page->fresh()->node->is(Node::find(1)));
+
+        $page->delete();
+
+        $this->assertNull(Node::find(1));
     }
 
     public function testWidgets()

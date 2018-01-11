@@ -24,6 +24,12 @@ class Page extends Model
 
             $node->save();
         });
+
+        static::deleting(function (Page $page) {
+            if ($page->node) {
+                $page->node->delete();
+            }
+        });
     }
 
     public function node()
