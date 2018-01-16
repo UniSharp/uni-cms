@@ -3,14 +3,12 @@
 namespace UniSharp\UniCMS\Traits;
 
 use UniSharp\UniCMS\Translation;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Database\Eloquent\Builder;
 
 trait Translatable
 {
     protected $lang;
-
-    protected $defaultLang = 'en';
-    protected $fallbackLang = 'en';
 
     protected $translations = [];
     protected $originalTranslations = [];
@@ -112,8 +110,8 @@ trait Translatable
     {
         $value = $this->translations[$lang][$key] ??
                  $this->originalTranslations[$lang][$key] ??
-                 $this->translations[$this->fallbackLang][$key] ??
-                 $this->originalTranslations[$this->fallbackLang][$key] ??
+                 $this->translations[Lang::getFallback()][$key] ??
+                 $this->originalTranslations[Lang::getFallback()][$key] ??
                  null;
 
         if ($this->hasCast($key)) {
@@ -126,8 +124,8 @@ trait Translatable
     public function translationsToArray($lang)
     {
         return $this->addCastAttributesToArray(array_merge(
-            $this->originalTranslations[$this->fallbackLang] ?? [],
-            $this->translations[$this->fallbackLang] ?? [],
+            $this->originalTranslations[Lang::getFallback()] ?? [],
+            $this->translations[Lang::getFallback()] ?? [],
             $this->originalTranslations[$lang] ?? [],
             $this->translations[$lang] ?? []
         ), []);
@@ -213,7 +211,7 @@ trait Translatable
 
     protected function getLang()
     {
-        return $this->lang ?: $this->defaultLang;
+        return $this->lang ?: Lang::getLocale();
     }
 
     protected function isTranslatedAttribute($key)

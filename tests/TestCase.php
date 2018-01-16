@@ -5,6 +5,7 @@ namespace Tests;
 use Mockery as m;
 use CreateUniCMSTables;
 use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Capsule\Manager;
 
@@ -34,6 +35,8 @@ class TestCase extends \PHPUnit\Framework\TestCase
         (new CreateUniCMSTables)->down();
 
         m::close();
+
+        Facade::clearResolvedInstances();
 
         parent::tearDown();
     }

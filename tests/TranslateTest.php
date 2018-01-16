@@ -5,6 +5,7 @@ namespace Tests;
 use Mockery as m;
 use UniSharp\UniCMS\Page;
 use UniSharp\UniCMS\Translation;
+use Illuminate\Support\Facades\Lang;
 
 class TranslateTest extends TestCase
 {
@@ -87,6 +88,9 @@ class TranslateTest extends TestCase
 
     public function testToArray()
     {
+        Lang::shouldReceive('getLocale')->andReturn('en');
+        Lang::shouldReceive('getFallback')->andReturn('en');
+
         $page = new class(['slug' => 'foo']) extends Page {
             public $table = 'pages';
             protected $translatedAttributes = ['name', 'title'];
@@ -111,6 +115,8 @@ class TranslateTest extends TestCase
 
     public function testDefaultLanguage()
     {
+        Lang::shouldReceive('getLocale')->twice()->andReturn('en');
+
         $page = new Page(['slug' => 'foo']);
 
         $page->name = 'foo';
@@ -124,6 +130,8 @@ class TranslateTest extends TestCase
 
     public function testFallbackLanguage()
     {
+        Lang::shouldReceive('getFallback')->times(10)->andReturn('en');
+
         $page = new Page(['slug' => 'foo']);
 
         $page->translate('en')->name = 'foo';
@@ -141,6 +149,9 @@ class TranslateTest extends TestCase
 
     public function testToArrayWithFallbackLang()
     {
+        Lang::shouldReceive('getLocale')->andReturn('en');
+        Lang::shouldReceive('getFallback')->andReturn('en');
+
         $page = new class(['slug' => 'foo']) extends Page {
             public $table = 'pages';
             protected $translatedAttributes = ['name', 'title'];
@@ -163,6 +174,9 @@ class TranslateTest extends TestCase
 
     public function testFill()
     {
+        Lang::shouldReceive('getLocale')->andReturn('en');
+        Lang::shouldReceive('getFallback')->andReturn('en');
+
         $page = new Page(['slug' => 'foo', 'name' => 'foo']);
 
         $this->assertEquals('foo', $page->translate('de')->name);
@@ -178,6 +192,9 @@ class TranslateTest extends TestCase
 
     public function testFillwithUnguraded()
     {
+        Lang::shouldReceive('getLocale')->andReturn('en');
+        Lang::shouldReceive('getFallback')->andReturn('en');
+
         Page::unguarded(function () {
             $page = new Page(['slug' => 'foo', 'name' => 'foo']);
 
@@ -195,6 +212,8 @@ class TranslateTest extends TestCase
 
     public function testCast()
     {
+        Lang::shouldReceive('getFallback')->andReturn('en');
+
         $page = new class(['slug' => 'foo']) extends Page {
             public $table = 'pages';
             protected $translatedAttributes = ['data'];

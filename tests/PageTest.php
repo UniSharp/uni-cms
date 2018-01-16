@@ -5,6 +5,7 @@ namespace Tests;
 use Mockery as m;
 use UniSharp\UniCMS\Node;
 use UniSharp\UniCMS\Page;
+use Illuminate\Support\Facades\Lang;
 
 class PageTest extends TestCase
 {
@@ -69,6 +70,9 @@ class PageTest extends TestCase
 
     public function testToTree()
     {
+        Lang::shouldReceive('getLocale')->andReturn('en');
+        Lang::shouldReceive('getFallback')->andReturn('en');
+
         $root = Page::create(['slug' => 'foo']);
         $parent = $root->children()->create(['slug' => 'bar']);
         $child = $parent->children()->create(['slug' => 'baz']);

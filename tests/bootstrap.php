@@ -13,6 +13,6 @@ $capsule->addConnection([
     'database'  => ':memory:',
 ]);
 
-$capsule->setEventDispatcher(new Dispatcher(new Container));
+$capsule->setEventDispatcher(new Dispatcher($app = new Container));
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
