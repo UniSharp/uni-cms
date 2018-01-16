@@ -81,7 +81,7 @@ class Page extends Model
                 }
             }
 
-            // TODO: bug? no page bug node...
+            // TODO: bug? no page but node...
             $page = $node['node'];
 
             if (count($children)) {
