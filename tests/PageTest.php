@@ -40,15 +40,19 @@ class PageTest extends TestCase
 
         $this->assertTrue($parent->children->contains($child));
         $this->assertTrue($parent->children()->first()->is($child));
+        $this->assertTrue($parent->children()->get()->first()->is($child));
         $this->assertTrue($parent->children()->where('slug', 'bar')->first()->is($child));
     }
 
     public function testRoot()
     {
         $root = Page::create(['slug' => 'foo']);
+        $parent = $root->children()->create(['slug' => 'bar']);
+        $child = $parent->children()->create(['slug' => 'baz']);
 
-        $child = $root->children()->create(['slug' => 'bar'])->fresh();
         $root = $root->fresh();
+        $parent = $parent->fresh();
+        $child = $child->fresh();
 
         $this->assertTrue($child->root->is($root));
     }

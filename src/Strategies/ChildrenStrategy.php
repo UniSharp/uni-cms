@@ -26,7 +26,7 @@ class ChildrenStrategy extends BaseStrategy
 
     public function __call($method, $args)
     {
-        if ($method === 'first') {
+        if (in_array($method, ['get', 'first'])) {
             $result = $this->getRelation()->$method(...$args);
         } else {
             $result = $this->getRelation()->whereHas('page', function (Builder $query) use ($method, $args) {

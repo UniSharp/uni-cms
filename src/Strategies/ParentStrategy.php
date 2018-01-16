@@ -17,15 +17,7 @@ class ParentStrategy extends BaseStrategy
 
     public function __call($method, $args)
     {
-        $result = $this->getRelation()->$method(...$args);
-
-        if ($result instanceof Relation) {
-            $this->relation = $result;
-
-            return $this;
-        }
-
-        return $result;
+        return $this->getRelation()->$method(...$args);
     }
 
     protected function getRelation()
