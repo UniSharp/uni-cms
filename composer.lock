@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2cb79393a6091ee570cc055d683589cd",
+    "content-hash": "8fc45b39040d35c379b9f8be2e95cabe",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -222,16 +222,16 @@
         },
         {
             "name": "illuminate/events",
-            "version": "v5.5.17",
+            "version": "v5.5.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/events.git",
-                "reference": "4879769619e0ea8a720885ba802e315c822eb246"
+                "reference": "1b558bfa1013f25b35e593c83fce7990d20c4d97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/events/zipball/4879769619e0ea8a720885ba802e315c822eb246",
-                "reference": "4879769619e0ea8a720885ba802e315c822eb246",
+                "url": "https://api.github.com/repos/illuminate/events/zipball/1b558bfa1013f25b35e593c83fce7990d20c4d97",
+                "reference": "1b558bfa1013f25b35e593c83fce7990d20c4d97",
                 "shasum": ""
             },
             "require": {
@@ -263,7 +263,7 @@
             ],
             "description": "The Illuminate Events package.",
             "homepage": "https://laravel.com",
-            "time": "2017-08-27T02:05:29+00:00"
+            "time": "2017-12-14T13:29:55+00:00"
         },
         {
             "name": "illuminate/filesystem",

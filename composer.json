@@ -11,7 +11,8 @@
         "illuminate/support": "^5.5",
         "illuminate/container": "^5.5",
         "kalnoy/nestedset": "^4.3",
-        "illuminate/translation": "^5.5"
+        "illuminate/translation": "^5.5",
+        "illuminate/events": "^5.5"
     },
     "autoload": {
         "psr-4": {
