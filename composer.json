@@ -1,9 +1,16 @@
 {
     "name": "unisharp/uni-cms",
+    "description": "CMS Components",
+    "license": "MIT",
     "authors": [
         {
             "name": "Sasaya",
             "email": "storyn26383@gmail.com"
+        },
+        {
+            "name": "UniSharp",
+            "email": "opensource@unisharp.com",
+            "homepage": "https://www.unisharp.com"
         }
     ],
     "require": {
