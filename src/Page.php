@@ -81,8 +81,7 @@ class Page extends Model
                 }
             }
 
-            // TODO: bug? no page but node...
-            $page = $node['node'];
+            $page = $node['page'];
 
             if (count($children)) {
                 $page['children'] = $children;

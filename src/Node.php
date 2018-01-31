@@ -20,6 +20,6 @@ class Node extends Model
 
     public function page()
     {
-        return $this->morphTo('node');
+        return $this->morphTo('page', 'node_type', 'node_id');
     }
 }
