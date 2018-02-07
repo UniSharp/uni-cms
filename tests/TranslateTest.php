@@ -179,15 +179,38 @@ class TranslateTest extends TestCase
 
         $page = new Page(['slug' => 'foo', 'name' => 'foo']);
 
-        $this->assertEquals('foo', $page->translate('de')->name);
-        $this->assertEquals('foo', $page->getTranslation('de', 'name'));
+        $this->assertEquals('foo', $page->translate('en')->name);
+        $this->assertEquals('foo', $page->getTranslation('en', 'name'));
 
         $page->save();
 
-        $this->assertEquals('foo', $page->translate('de')->name);
-        $this->assertEquals('foo', $page->getTranslation('de', 'name'));
-        $this->assertEquals('foo', $page->fresh()->translate('de')->name);
-        $this->assertEquals('foo', $page->fresh()->getTranslation('de', 'name'));
+        $this->assertEquals('foo', $page->translate('en')->name);
+        $this->assertEquals('foo', $page->getTranslation('en', 'name'));
+        $this->assertEquals('foo', $page->fresh()->translate('en')->name);
+        $this->assertEquals('foo', $page->fresh()->getTranslation('en', 'name'));
+    }
+
+    public function testCreate()
+    {
+        $page = Page::translate('en')->create(['slug' => 'foo', 'name' => 'foo']);
+
+        $this->assertEquals('foo', $page->translate('en')->name);
+        $this->assertEquals('foo', $page->getTranslation('en', 'name'));
+        $this->assertEquals('foo', $page->fresh()->translate('en')->name);
+        $this->assertEquals('foo', $page->fresh()->getTranslation('en', 'name'));
+    }
+
+    public function testCreateWithDefaultLanguage()
+    {
+        Lang::shouldReceive('getLocale')->andReturn('en');
+        Lang::shouldReceive('getFallback')->andReturn('en');
+
+        $page = Page::create(['slug' => 'foo', 'name' => 'foo']);
+
+        $this->assertEquals('foo', $page->translate('en')->name);
+        $this->assertEquals('foo', $page->getTranslation('en', 'name'));
+        $this->assertEquals('foo', $page->fresh()->translate('en')->name);
+        $this->assertEquals('foo', $page->fresh()->getTranslation('en', 'name'));
     }
 
     public function testFillwithUnguraded()

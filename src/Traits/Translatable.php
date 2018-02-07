@@ -131,13 +131,6 @@ trait Translatable
         ), []);
     }
 
-    public function translate($lang)
-    {
-        $this->lang = $lang;
-
-        return $this;
-    }
-
     public function getTranslatedAttributes()
     {
         return $this->translatedAttributes ?? [];
@@ -175,6 +168,21 @@ trait Translatable
         return !!count($this->getTranslatedAttributes()) && parent::totallyGuarded();
     }
 
+    public function newInstance($attributes = [], $exists = false)
+    {
+        $model = new static;
+
+        $model->translate($this->lang);
+
+        $model->fill((array) $attributes);
+
+        $model->exists = $exists;
+
+        $model->setConnection($this->getConnectionName());
+
+        return $model;
+    }
+
     public function __get($key)
     {
         if ($this->isTranslatedAttribute($key)) {
@@ -195,6 +203,15 @@ trait Translatable
         parent::__set($key, $value);
     }
 
+    public function __call($method, $parameters)
+    {
+        if ($method === 'translate') {
+            return $this->$method(...$parameters);
+        }
+
+        return parent::__call($method, $parameters);
+    }
+
     public function toArray()
     {
         $array = array_merge(
@@ -207,6 +224,13 @@ trait Translatable
         array_forget($array, 'translations');
 
         return $array;
+    }
+
+    protected function translate($lang)
+    {
+        $this->lang = $lang;
+
+        return $this;
     }
 
     protected function getLang()
