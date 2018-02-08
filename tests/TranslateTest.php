@@ -190,6 +190,24 @@ class TranslateTest extends TestCase
         $this->assertEquals('foo', $page->fresh()->getTranslation('en', 'name'));
     }
 
+    public function testGuard()
+    {
+        Lang::shouldReceive('getLocale')->andReturn('en');
+        Lang::shouldReceive('getFallback')->andReturn('en');
+
+        $page = new Page(['slug' => 'foo', 'missing' => 'foo']);
+
+        $this->assertNull($page->translate('en')->missing);
+        $this->assertNull($page->getTranslation('en', 'missing'));
+
+        $page->save();
+
+        $this->assertNull($page->translate('en')->missing);
+        $this->assertNull($page->getTranslation('en', 'missing'));
+        $this->assertNull($page->fresh()->translate('en')->missing);
+        $this->assertNull($page->fresh()->getTranslation('en', 'missing'));
+    }
+
     public function testCreate()
     {
         $page = Page::translate('en')->create(['slug' => 'foo', 'name' => 'foo']);
@@ -213,7 +231,7 @@ class TranslateTest extends TestCase
         $this->assertEquals('foo', $page->fresh()->getTranslation('en', 'name'));
     }
 
-    public function testFillwithUnguraded()
+    public function testFillWithUnguraded()
     {
         Lang::shouldReceive('getLocale')->andReturn('en');
         Lang::shouldReceive('getFallback')->andReturn('en');
