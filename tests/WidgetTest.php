@@ -17,16 +17,22 @@ class WidgetTest extends TestCase
         $this->assertTrue($widget->fresh()->page->is($page));
     }
 
-    public function testAutoInsertSort()
+    public function testAutoSortOnCreatingAndDeleted()
     {
         $page = Page::create(['slug' => 'foo']);
 
-        $this->assertEquals(0, $page->widgets()->create(['type' => 'text-center'])->sort);
-        $this->assertEquals(1, $page->widgets()->create(['type' => 'text-center'])->sort);
+        $this->assertEquals(0, ($widgetA = $page->widgets()->create(['type' => 'text-center']))->sort);
+        $this->assertEquals(1, ($widgetB = $page->widgets()->create(['type' => 'text-center']))->sort);
+        $this->assertEquals(2, ($widgetC = $page->widgets()->create(['type' => 'text-center']))->sort);
+
+        $widgetA->delete();
+
+        $this->assertEquals(0, $widgetB->fresh()->sort);
+        $this->assertEquals(1, $widgetC->fresh()->sort);
         $this->assertEquals(2, $page->widgets()->create(['type' => 'text-center'])->sort);
     }
 
-    public function testAutoSort()
+    public function testAutoSortOnListing()
     {
         $page = Page::create(['slug' => 'foo']);
 

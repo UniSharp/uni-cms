@@ -32,6 +32,12 @@ class Widget extends Model
 
             return $model;
         });
+
+        static::deleted(function ($model) {
+            $model->page->widgets->each(function ($widget, $sort) {
+                $widget->update(compact('sort'));
+            });
+        });
     }
 
     public function page()
