@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 trait Translatable
 {
     protected $lang;
+    protected $useLangFallback = true;
 
     protected $translations = [];
     protected $originalTranslations = [];
@@ -106,13 +107,25 @@ trait Translatable
         return $this;
     }
 
+    public function disableLangFallback()
+    {
+        $this->useLangFallback = false;
+
+        return $this;
+    }
+
     public function getTranslation($lang, $key)
     {
         $value = $this->translations[$lang][$key] ??
                  $this->originalTranslations[$lang][$key] ??
-                 $this->translations[Lang::getFallback()][$key] ??
-                 $this->originalTranslations[Lang::getFallback()][$key] ??
                  null;
+
+        if ($this->useLangFallback) {
+            $value = $value ??
+                     $this->translations[Lang::getFallback()][$key] ??
+                     $this->originalTranslations[Lang::getFallback()][$key] ??
+                     null;
+        }
 
         if ($this->hasCast($key)) {
             $value = $this->castAttribute($key, $value);
@@ -123,9 +136,18 @@ trait Translatable
 
     public function translationsToArray($lang)
     {
+        $values = [];
+
+        if ($this->useLangFallback) {
+            $values = array_merge(
+                $values,
+                $this->originalTranslations[Lang::getFallback()] ?? [],
+                $this->translations[Lang::getFallback()] ?? []
+            );
+        }
+
         return $this->addCastAttributesToArray(array_merge(
-            $this->originalTranslations[Lang::getFallback()] ?? [],
-            $this->translations[Lang::getFallback()] ?? [],
+            $values,
             $this->originalTranslations[$lang] ?? [],
             $this->translations[$lang] ?? []
         ), []);

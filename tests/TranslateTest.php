@@ -147,6 +147,32 @@ class TranslateTest extends TestCase
         $this->assertEquals('foo', $page->fresh()->getTranslation('de', 'name'));
     }
 
+    public function testDisableFallbackLanguage()
+    {
+        Lang::shouldReceive('getFallback')->times(0)->andReturn('en');
+
+        $page = new Page(['slug' => 'foo']);
+        $page->disableLangFallback();
+
+        $page->translate('en')->name = 'foo';
+
+        $this->assertEquals(null, $page->translate('de')->name);
+        $this->assertEquals(null, $page->getTranslation('de', 'name'));
+
+        $page->save();
+
+        $this->assertEquals(null, $page->translate('de')->name);
+        $this->assertEquals(null, $page->getTranslation('de', 'name'));
+        $this->assertEquals(
+            null,
+            $page->fresh()->disableLangFallback()->translate('de')->name
+        );
+        $this->assertEquals(
+            null,
+            $page->fresh()->disableLangFallback()->getTranslation('de', 'name')
+        );
+    }
+
     public function testToArrayWithFallbackLang()
     {
         Lang::shouldReceive('getLocale')->andReturn('en');
@@ -170,6 +196,37 @@ class TranslateTest extends TestCase
         $this->assertEquals(['name' => 'FOO', 'title' => 'bar'], $page->translationsToArray('de'));
         $this->assertEquals('FOO', $page->translate('de')->toArray()['name']);
         $this->assertEquals('bar', $page->translate('de')->toArray()['title']);
+    }
+
+    public function testToArrayWithoutFallbackLang()
+    {
+        Lang::shouldReceive('getLocale')->andReturn('en');
+
+        $page = new class(['slug' => 'foo']) extends Page {
+            public $table = 'pages';
+            protected $translatedAttributes = ['name', 'title'];
+        };
+
+        $page->translate('en')->name = 'foo';
+
+        $page->save();
+
+        $this->assertEquals(
+            [],
+            $page->fresh()->disableLangFallback()->translationsToArray('de')
+        );
+        $this->assertEquals(
+            null,
+            $page->fresh()->disableLangFallback()->translate('de')->toArray()['name']
+        );
+
+        $page->translate('de')->name = 'FOO';
+        $page->translate('en')->title = 'bar';
+        $page->disableLangFallback();
+
+        $this->assertEquals(['name' => 'FOO'], $page->translationsToArray('de'));
+        $this->assertEquals('FOO', $page->translate('de')->toArray()['name']);
+        $this->assertEquals(null, $page->translate('de')->toArray()['title']);
     }
 
     public function testFill()
